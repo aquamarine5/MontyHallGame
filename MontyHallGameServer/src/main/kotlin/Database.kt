@@ -91,18 +91,23 @@ class DatabaseManager(private val log: Logger) {
         }
     }
 
-    fun gameFinish(firstGameWin: Boolean, secondGameWin: Boolean, thirdGameWin: Boolean) {
-        firstGameCount.incrementAndGet()
-        if (firstGameWin) {
-            firstGameWins.incrementAndGet()
+    fun gameFinish(firstGameWin: Boolean?, secondGameWin: Boolean?, thirdGameWin: Boolean?) {
+        if (firstGameWin != null) {
+            firstGameCount.incrementAndGet()
+            if (firstGameWin)
+                firstGameWins.incrementAndGet()
         }
-        secondGameCount.incrementAndGet()
-        if (secondGameWin) {
-            secondGameWins.incrementAndGet()
+
+        if (secondGameWin != null) {
+            secondGameCount.incrementAndGet()
+            if (secondGameWin)
+                secondGameWins.incrementAndGet()
         }
-        thirdGameCount.incrementAndGet()
-        if (thirdGameWin) {
-            thirdGameWins.incrementAndGet()
+
+        if (thirdGameWin != null) {
+            thirdGameCount.incrementAndGet()
+            if (thirdGameWin)
+                thirdGameWins.incrementAndGet()
         }
         log.debug(
             "first: ${firstGameWins.get()}/${firstGameCount.get()}, " +

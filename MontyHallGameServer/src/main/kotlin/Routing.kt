@@ -17,9 +17,9 @@ fun Application.configureRouting(databaseManager: DatabaseManager) {
         }
 
         get("/result") {
-            val first = call.request.queryParameters["first"] == "1"
-            val second = call.request.queryParameters["second"] == "1"
-            val third = call.request.queryParameters["third"] == "1"
+            val first = call.request.queryParameters["first"]?.toBooleanStrictOrNull()
+            val second = call.request.queryParameters["second"]?.toBooleanStrictOrNull()
+            val third = call.request.queryParameters["third"]?.toBooleanStrictOrNull()
             databaseManager.gameFinish(first, second, third)
             call.respondText("Result recorded")
         }
