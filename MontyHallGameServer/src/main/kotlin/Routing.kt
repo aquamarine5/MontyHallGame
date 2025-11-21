@@ -23,5 +23,10 @@ fun Application.configureRouting(databaseManager: DatabaseManager) {
             databaseManager.gameFinish(first, second, third)
             call.respondText("Result recorded")
         }
+
+        get("/clear") {
+            databaseManager.clearRecords()
+            call.respondText("Records cleared")
+        }
     }
 }

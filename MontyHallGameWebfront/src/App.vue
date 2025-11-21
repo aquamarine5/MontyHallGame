@@ -4,11 +4,18 @@
  * lovely lonely, but be a quokka.
 -->
 <script setup>
+import { useRouter } from 'vue-router';
 import { RouterLink, RouterView } from 'vue-router'
 import LineMdGithubTwotone from '~icons/line-md/github-twotone?width=32px&height=32px';
 
 function jumpToGithub() {
   window.open("https://github.com/aquamarine5/MontyHallGame", "_blanks")
+}
+
+const router = useRouter();
+
+function jumpToAdminPage() {
+  router.push('/admin');
 }
 </script>
 
@@ -16,10 +23,10 @@ function jumpToGithub() {
   <header>
     <div class="topbar_bg">
       <div class="topbar_container">
-        <div class="topbar_title">
+        <div class="topbar_title" @click="jumpToAdminPage">
           三门问题模拟器
           <div class="topbar_version">
-            v1.0 (251121)
+            v1.1 (251121)
           </div>
         </div>
         <LineMdGithubTwotone class="topbar_github" @click="jumpToGithub" />

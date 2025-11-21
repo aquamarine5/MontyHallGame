@@ -68,6 +68,7 @@ async function sendResult(params) {
     await fetch(url);
   } catch (error) {
     console.error('Failed to send result:', error);
+    alert("无法发送结果，请检查网络或目标服务是否运行。");
   }
 }
 

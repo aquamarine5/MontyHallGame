@@ -45,6 +45,7 @@ async function fetchDataAndDrawChart() {
     try {
         const response = await fetch(`${window.location.protocol}//${window.location.hostname}:1214/records`);
         if (!response.ok) {
+            alert("无法获取统计数据，请检查网络或目标服务是否运行。");
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
@@ -161,7 +162,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    padding: 0rem 2rem;
     font-family: sans-serif;
 }
 

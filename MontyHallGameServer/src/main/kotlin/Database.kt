@@ -45,6 +45,16 @@ class DatabaseManager(private val log: Logger) {
         )
     }
 
+    suspend fun clearRecords() {
+        firstGameCount.set(0)
+        firstGameWins.set(0)
+        secondGameCount.set(0)
+        secondGameWins.set(0)
+        thirdGameCount.set(0)
+        thirdGameWins.set(0)
+        saveToFile()
+    }
+
     private fun loadFromFile() {
         if (recordFile.exists()) {
             try {
