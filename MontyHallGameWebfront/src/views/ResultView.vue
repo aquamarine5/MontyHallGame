@@ -1,3 +1,8 @@
+<!--
+ * @Author: aquamarine5 && aquamarine5_@outlook.com
+ * Copyright (c) 2025 by @aquamarine5, RC. All Rights Reversed.
+ * lovely lonely, but be a quokka.
+-->
 <template>
     <div class="result-container">
         <h1>游戏结果统计</h1>
@@ -38,7 +43,7 @@ const chartOption = ref({});
 // 获取并处理数据
 async function fetchDataAndDrawChart() {
     try {
-        const response = await fetch('http://127.0.0.1:1214/records');
+        const response = await fetch(`${window.location.protocol}//${window.location.hostname}:1214/records`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -63,7 +68,8 @@ async function fetchDataAndDrawChart() {
                 }
             },
             legend: {
-                data: ['成功', '失败']
+                data: ['成功', '失败'],
+                top: 'top'
             },
             grid: {
                 left: '3%',

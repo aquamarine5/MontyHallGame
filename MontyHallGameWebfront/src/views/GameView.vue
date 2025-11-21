@@ -1,3 +1,8 @@
+<!--
+ * @Author: aquamarine5 && aquamarine5_@outlook.com
+ * Copyright (c) 2025 by @aquamarine5, RC. All Rights Reversed.
+ * lovely lonely, but be a quokka.
+-->
 <script setup>
 import { ref, computed } from 'vue';
 
@@ -57,7 +62,7 @@ function hostOpenDoor() {
 }
 
 async function sendResult(params) {
-  const url = new URL('http://127.0.0.1:1214/result');
+  const url = new URL(`${window.location.protocol}//${window.location.hostname}:1214/result`);
   url.search = new URLSearchParams(params).toString();
   try {
     await fetch(url);
@@ -76,6 +81,9 @@ function classicFinalChoice(strategy) {
     finalDoorId = classicDoors.value.find(d =>
       d.id !== classicUserChoice.value && d.id !== classicHostOpened.value
     ).id;
+    // Move the selection border
+    classicDoors.value.find(d => d.id === classicUserChoice.value).isSelected = false;
+    classicDoors.value.find(d => d.id === finalDoorId).isSelected = true;
   }
 
   // 打开所有门并显示结果
@@ -135,13 +143,22 @@ function friendSelectDoor(doorId) {
 }
 
 function friendOpenDoor() {
-  const remainingDoors = friendDoors.value.filter(d => d.id !== friendUserChoice.value);
-  const doorToOpen = remainingDoors[Math.floor(Math.random() * remainingDoors.length)];
+  const options = friendDoors.value.filter(d => d.id !== friendUserChoice.value && !d.hasPrize);
 
-  friendOpened.value = doorToOpen.id;
-  friendDoors.value.find(d => d.id === doorToOpen.id).isOpen = true;
+  let doorToOpenId;
+  if (options.length > 0) {
+    // 如果用户选的不是奖品门，则只有一个选项
+    doorToOpenId = options[0].id;
+  } else {
+    // 如果用户选的是奖品门，则在另外两个空门里随机选一个
+    const otherDoors = friendDoors.value.filter(d => d.id !== friendUserChoice.value);
+    doorToOpenId = otherDoors[Math.floor(Math.random() * otherDoors.length)].id;
+  }
 
-  setTimeout(() => applyFriendStrategyAndFinish(doorToOpen.id), 1000);
+  friendOpened.value = doorToOpenId;
+  friendDoors.value.find(d => d.id === doorToOpenId).isOpen = true;
+
+  setTimeout(() => applyFriendStrategyAndFinish(doorToOpenId), 1000);
 }
 
 function applyFriendStrategyAndFinish(openedDoorId) {
@@ -155,6 +172,9 @@ function applyFriendStrategyAndFinish(openedDoorId) {
   } else {
     friendDecision.value = 'switch';
     friendFinalDoorId.value = otherUnopenedDoor.id;
+    // Move the selection border
+    friendDoors.value.find(d => d.id === friendUserChoice.value).isSelected = false;
+    friendDoors.value.find(d => d.id === friendFinalDoorId.value).isSelected = true;
   }
 
   friendGameState.value = 'revealed';
@@ -258,7 +278,7 @@ setupFriendDoors();
 <style>
 .game-container {
   max-width: 800px;
-  margin: 2rem auto;
+  margin: 0rem auto;
   padding: 1rem;
   text-align: center;
   font-family: sans-serif;
@@ -302,8 +322,8 @@ setupFriendDoors();
 }
 
 .door.final-choice {
-  border-color: #ffD700;
-  box-shadow: 0 0 20px #ffD700;
+  border-color: #42b983;
+  box-shadow: 0 0 20px #42b983;
 }
 
 .door-front,
@@ -349,7 +369,7 @@ setupFriendDoors();
 .stats-link button {
   padding: 10px 20px;
   font-size: 1rem;
-  margin: 0 10px;
+  margin: 10px 10px;
   cursor: pointer;
   border: 1px solid #42b983;
   background-color: #42b983;
