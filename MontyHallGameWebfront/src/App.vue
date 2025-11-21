@@ -8,7 +8,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import LineMdGithubTwotone from '~icons/line-md/github-twotone?width=32px&height=32px';
 
 function jumpToGithub() {
-  window.open("https://github.com/aquamarine5/XiaolianWebHelper", "_blanks")
+  window.open("https://github.com/aquamarine5/MontyHallGame", "_blanks")
 }
 </script>
 
