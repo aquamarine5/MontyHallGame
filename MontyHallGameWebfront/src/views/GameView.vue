@@ -6,14 +6,12 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-// --- 经典三门问题状态 ---
 const classicDoors = ref([]);
 const classicGameState = ref('initial'); // initial, selected, revealed, finished
 const classicUserChoice = ref(null);
 const classicHostOpened = ref(null);
 const classicFinalResult = ref(''); // 'win' or 'lose'
 
-// --- 游戏初始化 ---
 function setupDoors() {
   const prizeDoor = Math.floor(Math.random() * 3) + 1;
   classicDoors.value = [
@@ -31,7 +29,6 @@ function resetClassicGame() {
   setupDoors();
 }
 
-// --- 经典游戏流程 ---
 function classicSelectDoor(doorId) {
   if (classicGameState.value !== 'initial') return;
 
@@ -39,7 +36,6 @@ function classicSelectDoor(doorId) {
   classicDoors.value.find(d => d.id === doorId).isSelected = true;
   classicGameState.value = 'selected';
 
-  // 主持人打开一扇门
   setTimeout(hostOpenDoor, 500);
 }
 
@@ -48,10 +44,8 @@ function hostOpenDoor() {
 
   let doorToOpen;
   if (options.length > 0) {
-    // 如果用户选的不是奖品门，则只有一个选项
     doorToOpen = options[0].id;
   } else {
-    // 如果用户选的是奖品门，则在另外两个空门里随机选一个
     const otherDoors = classicDoors.value.filter(d => d.id !== classicUserChoice.value);
     doorToOpen = otherDoors[Math.floor(Math.random() * otherDoors.length)].id;
   }
@@ -78,16 +72,14 @@ function classicFinalChoice(strategy) {
   let finalDoorId;
   if (strategy === 'stick') {
     finalDoorId = classicUserChoice.value;
-  } else { // 'switch'
+  } else {
     finalDoorId = classicDoors.value.find(d =>
       d.id !== classicUserChoice.value && d.id !== classicHostOpened.value
     ).id;
-    // Move the selection border
     classicDoors.value.find(d => d.id === classicUserChoice.value).isSelected = false;
     classicDoors.value.find(d => d.id === finalDoorId).isSelected = true;
   }
 
-  // 打开所有门并显示结果
   const finalDoor = classicDoors.value.find(d => d.id === finalDoorId);
   const hasWon = finalDoor.hasPrize;
   classicFinalResult.value = hasWon ? 'win' : 'lose';
@@ -95,7 +87,7 @@ function classicFinalChoice(strategy) {
   const params = {};
   if (strategy === 'stick') {
     params.first = hasWon;
-  } else { // 'switch'
+  } else {
     params.second = hasWon;
   }
   sendResult(params);
@@ -148,10 +140,8 @@ function friendOpenDoor() {
 
   let doorToOpenId;
   if (options.length > 0) {
-    // 如果用户选的不是奖品门，则只有一个选项
     doorToOpenId = options[0].id;
   } else {
-    // 如果用户选的是奖品门，则在另外两个空门里随机选一个
     const otherDoors = friendDoors.value.filter(d => d.id !== friendUserChoice.value);
     doorToOpenId = otherDoors[Math.floor(Math.random() * otherDoors.length)].id;
   }
@@ -159,7 +149,7 @@ function friendOpenDoor() {
   friendOpened.value = doorToOpenId;
   friendDoors.value.find(d => d.id === doorToOpenId).isOpen = true;
 
-  setTimeout(() => applyFriendStrategyAndFinish(doorToOpenId), 1000);
+  setTimeout(() => applyFriendStrategyAndFinish(doorToOpenId), 500);
 }
 
 function applyFriendStrategyAndFinish(openedDoorId) {
@@ -173,7 +163,7 @@ function applyFriendStrategyAndFinish(openedDoorId) {
   } else {
     friendDecision.value = 'switch';
     friendFinalDoorId.value = otherUnopenedDoor.id;
-    // Move the selection border
+
     friendDoors.value.find(d => d.id === friendUserChoice.value).isSelected = false;
     friendDoors.value.find(d => d.id === friendFinalDoorId.value).isSelected = true;
   }
@@ -189,11 +179,10 @@ function applyFriendStrategyAndFinish(openedDoorId) {
 
     friendDoors.value.forEach(d => d.isOpen = true);
     friendGameState.value = 'finished';
-  }, 1500);
+  }, 800);
 }
 
 
-// --- 初始化游戏 ---
 setupDoors();
 setupFriendDoors();
 
@@ -203,7 +192,6 @@ setupFriendDoors();
   <main class="game-container">
     <h1>三门游戏</h1>
 
-    <!-- 经典三门问题 -->
     <div class="game-section">
       <h2>场景一：经典三门问题</h2>
       <p v-if="classicGameState === 'initial'">请选择一扇门：</p>
@@ -238,7 +226,6 @@ setupFriendDoors();
       </div>
     </div>
 
-    <!-- 朋友开门场景 -->
     <div class="game-section">
       <h2>场景二：朋友开门策略</h2>
       <p v-if="friendGameState === 'initial'">请选择一扇门：</p>
@@ -286,7 +273,7 @@ setupFriendDoors();
 }
 
 .stats-link {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .game-section {
@@ -303,6 +290,7 @@ setupFriendDoors();
 }
 
 .door {
+  margin: 0px 5px;
   width: 100px;
   height: 150px;
   border: 2px solid #555;

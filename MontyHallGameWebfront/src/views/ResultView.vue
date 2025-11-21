@@ -28,7 +28,6 @@ import {
 } from 'echarts/components';
 import VChart, { THEME_KEY } from 'vue-echarts';
 
-// 注册 ECharts 组件
 use([
     CanvasRenderer,
     BarChart,
@@ -40,7 +39,6 @@ use([
 
 const chartOption = ref({});
 
-// 获取并处理数据
 async function fetchDataAndDrawChart() {
     try {
         const response = await fetch(`${window.location.protocol}//${window.location.hostname}:1214/records`);
@@ -60,16 +58,37 @@ async function fetchDataAndDrawChart() {
             return `${((winsData[i] / count) * 100).toFixed(1)}%`;
         });
 
+        const seriesData = [
+            { name: '策略1-成功', color: '#3366CC', data: [winsData[0], 0, 0] },
+            { name: '策略1-失败', color: '#87CEFA', data: [lossesData[0], 0, 0] },
+            { name: '策略2-成功', color: '#228B22', data: [0, winsData[1], 0] },
+            { name: '策略2-失败', color: '#98FB98', data: [0, lossesData[1], 0] },
+            { name: '策略3-成功', color: '#FF8C00', data: [0, 0, winsData[2]] },
+            { name: '策略3-失败', color: '#FFDAB9', data: [0, 0, lossesData[2]] },
+        ];
+
         // 设置 ECharts 配置
         chartOption.value = {
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
                     type: 'shadow'
+                },
+                formatter: function (params) {
+                    const categoryName = params[0].axisValueLabel;
+                    let tooltipHtml = `${categoryName}<br/>`;
+
+                    params.forEach(param => {
+                        if (param.seriesName !== '胜率' && param.value > 0) {
+                            tooltipHtml += `${param.marker} ${param.seriesName}: ${param.value}<br/>`;
+                        }
+                    });
+
+                    return tooltipHtml;
                 }
             },
             legend: {
-                data: ['成功', '失败'],
+                data: seriesData.map(s => s.name),
                 top: 'top'
             },
             grid: {
@@ -86,46 +105,24 @@ async function fetchDataAndDrawChart() {
                 type: 'value'
             },
             series: [
-                {
-                    name: '成功',
+                ...seriesData.map(s => ({
+                    name: s.name,
                     type: 'bar',
                     stack: 'total',
                     label: {
                         show: true,
-                        position: 'inside'
+                        position: 'inside',
+                        formatter: (params) => (params.value > 0 ? params.value : '')
                     },
                     emphasis: {
                         focus: 'series'
                     },
-                    data: winsData,
+                    data: s.data,
                     itemStyle: {
-                        color: function (params) {
-                            const colorList = ['#3366CC', '#228B22', '#FF8C00']; // 深蓝, 深绿, 深橙
-                            return colorList[params.dataIndex];
-                        }
+                        color: s.color
                     }
-                },
+                })),
                 {
-                    name: '失败',
-                    type: 'bar',
-                    stack: 'total',
-                    label: {
-                        show: true,
-                        position: 'inside'
-                    },
-                    emphasis: {
-                        focus: 'series'
-                    },
-                    data: lossesData,
-                    itemStyle: {
-                        color: function (params) {
-                            const colorList = ['#87CEFA', '#98FB98', '#FFDAB9']; // 浅蓝, 浅绿, 浅橙
-                            return colorList[params.dataIndex];
-                        }
-                    }
-                },
-                {
-                    // 这个系列是“幽灵”系列，专门用来在顶部显示百分比
                     name: '胜率',
                     type: 'bar',
                     stack: 'total',
@@ -141,14 +138,14 @@ async function fetchDataAndDrawChart() {
                         fontSize: 14,
                         fontWeight: 'bold'
                     },
-                    data: [0, 0, 0] // 数据为0，不显示柱子
+                    data: [0, 0, 0]
                 }
             ]
         };
 
     } catch (error) {
         console.error("无法获取统计数据:", error);
-        // 可以在这里设置一个错误状态，并在UI上显示
+        alert("无法获取统计数据，请检查网络或目标服务是否运行。");
     }
 }
 
@@ -173,7 +170,7 @@ onMounted(() => {
 }
 
 .game-link {
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .game-link button {
