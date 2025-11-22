@@ -26,7 +26,7 @@ function jumpToAdminPage() {
         <div class="topbar_title" @click="jumpToAdminPage">
           三门问题模拟器
           <div class="topbar_version">
-            v1.2 (251121)
+            v1.3 (251122)
           </div>
         </div>
         <LineMdGithubTwotone class="topbar_github" @click="jumpToGithub" />

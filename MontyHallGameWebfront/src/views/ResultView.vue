@@ -48,7 +48,7 @@ async function fetchDataAndDrawChart() {
         }
         const data = await response.json();
 
-        const categories = ['策略1 (坚持原门)', '策略2 (始终改选)', '策略3 (条件改选)'];
+        const categories = ['策略1\n(坚持原门)', '策略2\n(始终改选)', '策略3\n(条件改选)'];
         const winsData = [data.firstGameWins, data.secondGameWins, data.thirdGameWins];
         const countsData = [data.firstGameCount, data.secondGameCount, data.thirdGameCount];
 
@@ -67,7 +67,6 @@ async function fetchDataAndDrawChart() {
             { name: '策略3-失败', color: '#FFDAB9', data: [0, 0, lossesData[2]] },
         ];
 
-        // 设置 ECharts 配置
         chartOption.value = {
             tooltip: {
                 trigger: 'axis',
