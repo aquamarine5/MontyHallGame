@@ -87,7 +87,8 @@ async function fetchDataAndDrawChart() {
                 }
             },
             legend: {
-                data: seriesData.map(s => s.name),
+                data: ['策略1-成功', '策略1-失败', '策略2-成功', '策略2-失败', '策略3-成功', '策略3-失败'],
+                orient: 'horizontal',
                 top: 'top'
             },
             grid: {
